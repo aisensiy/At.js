@@ -20,7 +20,7 @@
     factory window.jQuery
 ) ($) ->
 
-  # At.js 使用这个类克隆输入框, 插入标记后获得该标记的位置.
+  # At.js will use this class to mirror the inputor for catching the offset of the caret(key char here).
   #
   # @example
   #   mirror = new Mirror($("textarea#inputor"))
@@ -35,7 +35,7 @@
       "text-align",
     ]
 
-    # @param $inputor [Object] 输入框的 jQuery 对象
+    # @param $inputor [Object] The jQuery object of the inputor
     constructor: (@$inputor) ->
 
     # 克隆输入框的样式
@@ -52,12 +52,12 @@
         css[p] = @$inputor.css p
       css
 
-    # 在页面中创建克隆后的镜像.
+    # create a `div` element as the mirror of the inputor
     #
-    # @param html [String] 将输入框内容转换成 html 后的内容.
-    #   主要是为了给 `flag` (@, etc.) 打上标记
+    # @param html [String] The content that converted into HTML from inputor.
+    #   This is for marking `flag` (@, etc.)
     #
-    # @return [Object] 返回当前对象
+    # @return [Object] Current mirror object
     create: (html) ->
       @$mirror = $('<div></div>')
       @$mirror.css this.copy_inputor_css()
@@ -65,10 +65,11 @@
       @$inputor.after(@$mirror)
       this
 
-    # 获得标记的位置
+    # Get the offset of the flap
     #
-    # @return [Object] 标记的坐标
+    # @return [Object] The offset
     #   {left: 0, top: 0, bottom: 0}
+    #   from `top` to `bottom` is the line height.
     get_flag_rect: ->
       $flag = @$mirror.find "span#flag"
       pos = $flag.position()
@@ -84,16 +85,17 @@
     TAB: 9
     ENTER: 13
 
-  # Controller 用于处理渲染数据的一组方法.
-  #为了方便开发者可以自定义插件的部分功能而独立出来.
+  # Functions set for handling and rendering the data.
+  # Others developers can override these methods to tweak At.js such as matcher.
+  # We can override them in `callbacks` settings.
   #
   # @mixin
   #
   # 以下所有方法的调用上下文都是 Controller. 并且按照文档显示的顺序调用
+  # The context of these functions is `$.atwho.Controller` object and they are called in this sequences:
   #
-  # 也就是这个顺序 [data_refactor, matcher, filter, remote_filter, sorter, tpl_evl, highlighter, selector]
+  # [data_refactor, matcher, filter, remote_filter, sorter, tpl_evl, highlighter, selector]
   #
-  # 以默认配置的方式 Mixin 到 Controller 里.
   DEFAULT_CALLBACKS =
 
     # 用于插件最开始时对设置的数据进行重构.
